@@ -1,0 +1,72 @@
+
+.PHONY: sd_config sd_install sd_status sd_stop sd_clean sd_enable
+
+sd_config:
+	$(QUIET)sed -e "s:_JAVAPATH_:$(JAVA_PATH):g" -e "s:_JAVAOPTS_:$(JAVA_OPTS):g" -e "s:_CFPATH_:$(INSTALL_LOCATION):g" -e "s:_CHANNELFINDER_JAR_NAME_:$(CFJAR_FILENAME):g" < $(SITE_TEMPLATE_PATH)/$(SYSTEMD_FILENAME).in > $(SITE_TEMPLATE_PATH)/$(SYSTEMD_FILENAME)
+
+	
+sd_install: sd_config
+	$(QUIET)$(SUDO) install -b -m 644 $(SITE_TEMPLATE_PATH)/$(SYSTEMD_FILENAME) $(SYSTEMD_PATH)/
+	$(QUIET)$(SUDO) systemctl daemon-reload
+	
+sd_status:
+	$(QUIET) systemctl status -l $(SYSTEMD_FILENAME) | cat
+
+sd_start:
+	$(QUIET)$(SUDO) systemctl start $(SYSTEMD_FILENAME)
+
+sd_stop:
+	$(QUIET)$(SUDO) systemctl stop $(SYSTEMD_FILENAME)
+
+sd_restart:
+	$(QUIET)$(SUDO) systemctl restart $(SYSTEMD_FILENAME)
+
+
+sd_clean:
+	$(QUIET)$(SUDO) systemctl disable $(SYSTEMD_FILENAME)
+	$(QUIET)$(SUDO) rm -f $(SYSTEMD_PATH)/$(SYSTEMD_FILENAME)
+
+sd_enable:
+	$(QUIET)$(SUDO) systemctl enable $(SYSTEMD_FILENAME)
+	
+
+.PHONY: cf_status cf_start cf_stop cf_restart cf_install install src_versions uninstall
+
+cf_status: sd_status
+
+cf_start: sd_start
+
+cf_stop: sd_stop
+
+cf_restart: sd_restart
+
+cf_install: src_versions
+	$(QUIET)$(SUDO) $(INSTALL) -d $(INSTALL_LOCATION)
+	$(QUIET)$(SUDO) $(INSTALL) -m 744 $(SRC_PATH)/target/$(CFJAR_FILENAME)  $(INSTALL_LOCATION)/
+	$(QUIET)$(SUDO) $(INSTALL_DATA) -b $(SITE_TEMPLATE_PATH)/.versions      $(INSTALL_LOCATION)/
+	$(QUIET) rm -f $(SITE_TEMPLATE_PATH)/.versions
+
+
+
+## Install Service related files 
+install: cf_install sd_install sd_enable
+	$(QUIET)echo "----- Note that one should start it and check its status via "
+	$(QUIET)echo "----- systemctl start  $(SYSTEMD_FILENAME)"
+	$(QUIET)echo "----- systemctl status $(SYSTEMD_FILENAME)"
+
+
+src_versions:
+	$(QUIET)echo "Timestamps : $$(date +%Y%m%d-%H%M%S)/YYYYMMDD-HHMMSS" > $(SITE_TEMPLATE_PATH)/.versions
+	$(QUIET)echo "- SRC URL : $(SRC_GITURL)"  >> $(SITE_TEMPLATE_PATH)/.versions
+	$(QUIET)echo "- SRC VER : $(SRC_TAG)"     >> $(SITE_TEMPLATE_PATH)/.versions
+	
+
+
+## Uninstall 
+uninstall: sd_stop sd_clean
+	$(QUIET)$(SUDO) rm -rf $(INSTALL_LOCATION)
+
+
+reinstall: conf build install
+
+restart: uninstall reinstall cf_start cf_status

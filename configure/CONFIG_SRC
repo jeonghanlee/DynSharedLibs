@@ -1,0 +1,31 @@
+#
+#
+INSTALL:= install
+INSTALL_PROGRAM:=$(INSTALL)
+INSTALL_DATA:=$(INSTALL) -m 644
+SUDO := sudo
+SUDOBASH:=$(SUDO) -E bash -c
+#
+#
+# SRC_PATH_INFO 1 : the directory is not there
+# SRC_PATH_INFO 0 : the directory is there
+SRC_PATH_INFO := $(shell test -d $(SRC_PATH) 1>&2 2> /dev/null; echo $$?)
+#
+#
+ifeq "$(SRC_PATH_INFO)" "1"
+INIT_SRC = 1
+endif
+#
+#
+SITE_TEMPLATE_PATH:=$(TOP)/site-template
+#
+#
+VARS_EXCLUDES+=SRC_PATH_INFO
+VARS_EXCLUDES+=INSTALL
+VARS_EXCLUDES+=INSTALL_PROGRAM
+VARS_EXCLUDES+=INSTALL_DATA
+VARS_EXCLUDES+=SUDOBASH
+
+
+
+
