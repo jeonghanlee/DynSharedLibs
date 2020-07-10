@@ -2,13 +2,15 @@
 
 ![Linter Run](https://github.com/jeonghanlee/DynSharedLibs/workflows/Linter%20Run/badge.svg)
 
-To add an EPICS module into the prebuilt / running IOC is impossible without the whole new recompiling. However, in many situations, it may be impossible to recompile an entire IOC from scratch.  
+To add an EPICS module into the prebuilt / running IOC is impossible without the whole new recompiling technically. And in many situations, it may be impossible to recompile an entire IOC from scratch due to several reasons. However, in specific situation, we would like to add an EPICS module into an exist IOC.
 
-However, there is a hackable trick to do if the EPICS module has only EPICS base dependency. This hackable method is based on PSI/ESS dynamically loadable module [1,2], which works brilliant. And this repository shows one of simplest example how to do this without extra makefile, but with few more extra makefile rules. And this repository is just an example, which gives an insight to help EPICS control system engineers to resolve this issue if system is urgently needed to be integrated with an EPICS module.
+There is a minimal hackable method to do if the EPICS module has only EPICS base dependency. (We can do this in more complicated case, but I do not want to cover this situation.) This method is based on PSI/ESS dynamically loadable module [1,2], which works brilliant, but it uses the standard EPICS building system as much as it can.
 
-Michael Davidsaver [3] now developing the brand-new approach to embrace this method in the latest EPICS base.
+This repository shows one of simplest example how to do this without extra makefile, but with few more extra makefile rules. And this repository is just an example, which gives an insight to help EPICS control system engineers to resolve this issue if system is urgently needed to be integrated with an EPICS module.
 
-Note that this approach may not work the exist / prebuilt IOC due to unknown reasons.
+Michael Davidsaver now developing the brand-new approach to embrace PSI/ESS method in the latest EPICS base [3]. I hope we can have this feature soon.
+
+Note that this approach may not work the exist / prebuilt IOC due to unknown reasons, which I cannot test them all.
 
 ## Requirements
 
