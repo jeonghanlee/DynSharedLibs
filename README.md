@@ -6,6 +6,12 @@ However, there is a hackable trick to do if the EPICS module has only EPICS base
 
 Michael Davidsaver [3] now developing the brand-new approach to embrace this method in the latest EPICS base.
 
+Note that this approach may not work the exist / prebuilt IOC due to unknown reasons.
+
+## Requirements
+
+* EPICS Base : one MUST download the exact version of EPICS base which was used to build the exist IOC
+
 ## Build Procedure
 
 ```bash
