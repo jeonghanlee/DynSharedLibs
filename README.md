@@ -4,7 +4,7 @@
 
 To add an EPICS module into the prebuilt / running IOC is impossible without the whole new recompiling. However, in many situations, it may be impossible to recompile an entire IOC from scratch.  
 
-However, there is a hackable trick to do if the EPICS module has only EPICS base dependency. This hackable method based on PSI/ESS dynamically loadable module [1,2], which works brilliant. And this repository shows one of simplest example how to do this without extra makefile, but with few more extra makefile rules. And this repository is just an example, which gives an insight to help EPICS control system engineers to resolve this issue if system is urgently needed to be integrated with an EPICS module.
+However, there is a hackable trick to do if the EPICS module has only EPICS base dependency. This hackable method is based on PSI/ESS dynamically loadable module [1,2], which works brilliant. And this repository shows one of simplest example how to do this without extra makefile, but with few more extra makefile rules. And this repository is just an example, which gives an insight to help EPICS control system engineers to resolve this issue if system is urgently needed to be integrated with an EPICS module.
 
 Michael Davidsaver [3] now developing the brand-new approach to embrace this method in the latest EPICS base.
 
