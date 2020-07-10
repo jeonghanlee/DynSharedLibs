@@ -26,6 +26,9 @@ ifdef DEBUG_SHELL
   SHELL = /bin/sh -x
 endif
 
+# The following code's origin
+# https://github.com/paulscherrerinstitute/require/blob/2439791953107fa1a88bdfcd8aa4554dc2ec3a6a/App/tools/driver.makefile#L1016-L1042
+
 define makexportfile
 BEGIN { print "/* This is a generated file. Do not modify! */"; \
 	print "#include <drvSup.h>"; \
