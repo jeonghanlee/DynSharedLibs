@@ -3,8 +3,28 @@
 INSTALL:= install
 INSTALL_PROGRAM:=$(INSTALL)
 INSTALL_DATA:=$(INSTALL) -m 644
-SUDO := sudo
-SUDOBASH:=$(SUDO) -E bash -c
+
+# IF INSTALL_LOCATIOIN is not WRITABLE, SUDO and SUDOBASH should be used 
+# SUDO_INFO 1 : SUDO is needed (NOT writable)
+# SUDO_INFO 0 : SUDO is not needed
+SUDO_INFO := $(shell test -w $(INSTALL_LOCATIOIN) 1>&2 2> /dev/null; echo $$?)
+SUDO_CMD := $(shell which sudo)
+
+# For CentOS, devtoolset-{7,8} has -E option within sudo shell
+# So we have to remove -E option as well if we would like to use devtoolset
+#
+ifeq "$(SUDO_INFO)" "1"
+ifneq (,$(findstring devtoolset,$(SUDO_CMD)))
+SUDO = $(SUDO_CMD)
+else
+SUDO = $(SUDO_CMD) -E
+endif
+SUDOBASH := $(SUDO) bash -c
+else
+SUDO :=
+SUDOBASH = bash -c
+endif
+
 #
 #
 # SRC_PATH_INFO 1 : the directory is not there
@@ -17,9 +37,33 @@ INIT_SRC = 1
 endif
 #
 #
-SITE_TEMPLATE_PATH:=$(TOP)/site-template
-#
-#
+
+
+
+REG_SRC:=$(SRC_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
+REG_OBJ:=$(addsuffix .o,$(basename $(REG_SRC)))
+
+SRC_OBJS:=$(wildcard $(SRC_PATH)/devIocStats/O.$(EPICS_HOST_ARCH)/*.o)
+
+EXPORT_ADDR_SRC:=$(SRC_PATH)/$(APPNAME)_exportAddress.c
+EXPORT_ADDR_OBJ:=$(addsuffix .o,$(basename $(EXPORT_ADDR_SRC)))
+
+CPPFLAGS += -D_GNU_SOURCE -D_DEFAULT_SOURCE -DUSE_TYPED_RSET  
+CPPFLAGS += -D_X86_64_
+CPPFLAGS += -DUNIX  -Dlinux 
+CPPFLAGS += -MD -O3 -Wall -mtune=generic -m64 -fPIC  
+CPPFLAGS += -I$(SRC_PATH)/devIocStats/os/posix
+CPPFLAGS += -I$(SRC_PATH)/devIocStats/os/default
+CPPFLAGS += -I$(SRC_PACH)/devIocStats/os/Linux/
+CPPFLAGS += -I$(EPICS_BASE)/include
+CPPFLAGS += -I$(EPICS_BASE)/include/compiler/gcc
+CPPFLAGS += -I$(EPICS_BASE)/include/os/Linux     
+
+
+SHAREDLIB:= lib$(APPNAME).so
+
+LDFLAGS += -shared -fPIC -rdynamic -m64 
+
 VARS_EXCLUDES+=SRC_PATH_INFO
 VARS_EXCLUDES+=INSTALL
 VARS_EXCLUDES+=INSTALL_PROGRAM

@@ -26,9 +26,39 @@ ifdef DEBUG_SHELL
   SHELL = /bin/sh -x
 endif
 
+define makexportfile
+BEGIN { print "/* This is a generated file. Do not modify! */"; \
+	print "#include <drvSup.h>"; \
+	print "#include <devSup.h>"; \
+	print "#include <recSup.h>"; \
+	print "#include <registryFunction.h>"; \
+	print "#include <epicsExport.h>"; \
+	print "/* These are the RegisterFunction and ExportAddress calls missing for 3.14 compatible code. */"; \
+      } \
+/ U pvar_func_register_func_/ {name=substr($$2,25); func_missing[name]=1; next;} \
+/ [A-Z] pvar_func_register_func_/ {name=substr($$3,25); func_found[name]=1; next;} \
+/ U pvar_func_/ {name=substr($$2,11); reg_missing[name]=1; next;} \
+/ [A-Z] pvar_func_/ {name=substr($$3,11); reg_found[name]=1; next;} \
+/ U pvar_/ {i=index(substr($$2,6),"_"); type=substr($$2,6,i-1); name=substr($$2,i+6); var_missing[name]=type; next;} \
+/ [A-Z] pvar_/ {i=index(substr($$3,6),"_"); name=substr($$3,i+6); var_found[name]=1; next;} \
+END {for (name in func_missing) if (!func_found[name]) { \
+	print "void " name "();"; \
+	print "epicsRegisterFunction(" name ");"} \
+     for (name in reg_missing) if (!reg_found[name]) { \
+	print "extern REGISTRYFUNCTION " name ";"; \
+	print "epicsExportRegistrar(" name ");"} \
+     for (name in var_missing) if (!var_found[name]) { \
+        type = var_missing[name]; \
+	print "extern " type " " name ";"; \
+	print "epicsExportAddress(" type ", " name ");"} \
+    }
+endef
+
+
 
 ### Exclude the following variables to display
 VARS_EXCLUDES+=patch_src
 VARS_EXCLUDES+=revert_patch_src
 VARS_EXCLUDES+=QUIET
 VARS_EXCLUDES+=SHELL
+VARS_EXCLUDES+=makexportfile

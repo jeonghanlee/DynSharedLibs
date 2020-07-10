@@ -46,3 +46,7 @@ auto_positions.sav*
 \#*
 .versions
 *-src
+cmd 
+*.so
+*.local
+

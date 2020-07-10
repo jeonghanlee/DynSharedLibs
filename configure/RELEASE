@@ -1,9 +1,9 @@
 
-APPNAME:=env-template
+APPNAME:=iocStats
 
 ## Where the Source repository SRC_URL/SRC_NAME
 ##
-SRC_URL:=https://github.com/jeonghanlee
+SRC_URL:=https://github.com/epics-modules
 SRC_NAME:=${APPNAME}
 
 
@@ -13,6 +13,8 @@ SRC_TAG:=master
 
 ## Placeholder for the site-specific version control 
 SRC_VERSION:=master
+
+EPICS_BASE=${HOME}/epics_env/epics-base
 
 
 -include $(TOP)/../RELEASE.local

@@ -1,0 +1,23 @@
+
+EPICS_HOST_ARCH:=$(shell $(EPICS_BASE)/startup/EpicsHostArch.pl 2> /dev/null)
+
+ifeq ($(strip $(EPICS_HOST_ARCH)),)
+EPICS_HOST_ARCH:=$(shell perl $(EPICS_BASE)/src/tools/EpicsHostArch.pl 2> /dev/null)
+endif
+
+EPICS_BASE_HOST_BIN = $(EPICS_BASE)/bin/$(EPICS_HOST_ARCH)
+EPICS_BASE_HOST_LIB = $(EPICS_BASE)/lib/$(EPICS_HOST_ARCH)
+
+EPICS_BASE_IOC_LIBS := 
+
+TOOLS = $(abspath $(EPICS_BASE_HOST_BIN))
+
+REGISTERRECORDDEVICEDRIVER = $(PERL) $(TOOLS)/registerRecordDeviceDriver.pl
+
+MSI3_15 = $(EPICS_BASE_HOST_BIN)/msi
+
+EXPORT_VARS+=EPICS_BASE_IOC_LIBS
+export_version=$(eval export $1)
+$(eval $(foreach v,$(EXPORT_VARS),$(call export_version,$v)))
+
+VARS_EXCLUDES+=export_version

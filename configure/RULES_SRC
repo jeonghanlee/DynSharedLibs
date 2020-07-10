@@ -41,22 +41,58 @@ ifneq ($(wildcard $(SRC_PATH)/.*),)
 	$(QUIET)echo "We've found $(SRC_PATH)"
 	$(QUIET)echo "Removing ....."
 	$(QUIET)rm -rf $(SRC_PATH)
+	$(QUIET)rm -rf $(INSTALL_LOCATION)
 else
 	$(QUIET)echo "There is no $(SRC_PATH)."
 endif
 
 
-.PHONY: build conf
+.PHONY: build.src clean.src distclean.src
+
+
+build: task0 task1 task2 task3
 
 ## Build Source
-build:
-	echo "mvn $(MVN_OPTS) -f $(SRC_PATH) clean install -Dmaven.test.skip=true"
-	$(QUIET) mvn $(MVN_OPTS) -f $(SRC_PATH) clean install -Dmaven.test.skip=true
+task0: conf
+	$(QUIET) $(MAKE) -C $(SRC_PATH)
 
 ## Copy the site specific files into sources
 conf:
-	$(QUIET)sed -e "s:_KEYSTORE_:$(KEYSTORE_FILENAME):g" \
-		    -e "s:_CFLDIF_:$(CFLDIF_FILENAME):g" \
-		    < $(SITE_TEMPLATE_PATH)/application.properties.in \
-		    > $(SITE_TEMPLATE_PATH)/application.properties
-	$(QUIET)cp $(SITE_TEMPLATE_PATH)/application.properties $(SITE_SPECIFIC_FILES_PATH)/
+	$(QUIET)echo "EPICS_BASE=$(EPICS_BASE)" > RELEASE.local
+	$(QUIET)echo "MAKE_TEST_IOC_APP=NO"    >> RELEASE.local
+	$(QUIET)echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"       > CONFIG_SITE.local
+
+
+clean:
+	$(QUIET) $(MAKE) -C $(SRC_PATH) clean
+	$(QUIET) rm -f $(REG_OBJ) $(REG_SRC) $(EXPORT_ADDR_SRC) $(EXPORT_ADDR_OBJ) $(SHAREDLIB)
+	$(QUIET) rm -rf $(INSTALL_LOCATION)
+
+distclean.src:
+	$(QUIET) $(MAKE) -C $(SRC_PATH) distclean
+
+
+task1: register.src $(REG_OBJ)
+
+register.src:
+	$(QUIET)echo "Generating .... $(REG_SRC)"
+	$(REGISTERRECORDDEVICEDRIVER) $(SRC_PATH)/dbd/$(APP_DBD) $(APPNAME)_registerRecordDeviceDriver | grep -v iocshRegisterCommon > $(SRC_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
+
+$(REG_OBJ): $(REG_SRC)
+	$(QUIET)echo "Compiling ... $(REG_SRC)"
+	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
+
+task2: $(EXPORT_ADDR_OBJ)
+
+$(EXPORT_ADDR_OBJ): $(EXPORT_ADDR_SRC)
+	$(QUIET)echo "Compiling ... $(EXPORT_ADDR_SRC)"
+	$(COMPILE.c) $(OUTPUT_OPTION) $<
+
+$(EXPORT_ADDR_SRC):
+	$(QUIET)rm -f $@
+	nm $(SRC_OBJS) $(REG_OBJ) | awk '$(makexportfile)' > $@
+
+task3: $(SHAREDLIB)
+
+$(SHAREDLIB): $(SRC_OBJS) $(REG_OBJ) $(EXPORT_ADDR_OBJ) 
+	$(CXX) -o $@ $(LDFLAGS) $^ -lpthread -lm -lrt -ldl -lgcc 

@@ -1,0 +1,8 @@
+# ### IOCSTATS iocsh  ###
+#- ###################################################
+#- IOCNAME          - IOCSTATS IOCNAME
+#- ###################################################
+
+dbLoadRecords("iocAdminSoft-ess.db", "IOC=$(IOCNAME)-IocStats")
+
+
