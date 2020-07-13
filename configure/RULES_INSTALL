@@ -4,15 +4,17 @@ install: install.pre install.cmd
 
 install.pre:
 	$(QUIET)$(SUDO) $(INSTALL) -d $(INSTALL_LOCATION)
-	$(QUIET)$(SUDO) $(INSTALL) -m 744 $(SHAREDLIB)                   $(INSTALL_LOCATION)/
-	$(QUIET)$(SUDO) $(INSTALL) -m 444 $(SRC_PATH)/dbd/$(APP_DBD)     $(INSTALL_LOCATION)/
-	$(QUIET)$(SUDO) $(INSTALL) -m 444 $(SRC_PATH)/db/iocAdminSoft.db $(INSTALL_LOCATION)/
+	$(QUIET)$(SUDO) $(INSTALL) -m 744 $(SHAREDLIB)                       $(INSTALL_LOCATION)/
+	$(QUIET)$(SUDO) $(INSTALL) -m 444 $(MODULE_SRC_TOP)/dbd/$(APP_DBD)   $(INSTALL_LOCATION)/
+	$(QUIET)$(SUDO) $(INSTALL) -m 444 $(MODULE_SRC_TOP)/db/reccaster.db  $(INSTALL_LOCATION)/
 
 install.cmd:
-	$(QUIET)echo "# "     > $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "# "                                                  > $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "dlload \"$(INSTALL_LOCATION)/$(SHAREDLIB)\""        >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "dbLoadDatabase \"$(INSTALL_LOCATION)/$(APP_DBD)\""  >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "$(APPNAME)_registerRecordDeviceDriver"              >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "epicsEnvSet(\"IOCNAME\", \"TEST\")"                 >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "dbLoadRecords(\"$(INSTALL_LOCATION)/iocAdminSoft.db\", \"IOC=\$$(IOCNAME)-IocStats\")" >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "iocInit" >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "epicsEnvSet(\"IOCNAME\", \"$(APPNAME)\")"           >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "var(reccastTimeout, 5.0)"                           >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "var(reccastMaxHoldoff, 5.0)"                        >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "dbLoadRecords(\"$(INSTALL_LOCATION)/reccaster.db\", \"P=\$$(IOCNAME)-RecSync:\")" >> $(INSTALL_LOCATION)/st.cmd
+#	$(QUIET)echo "iocInit" >> $(INSTALL_LOCATION)/st.cmd

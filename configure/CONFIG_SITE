@@ -9,7 +9,7 @@ INSTALL_LOCATION=$(TOP)/cmd
 # ### 
 # JAR_FILENAME:=${APPNAME}.jar
 
-APP_DBD=devIocStats.dbd
+APP_DBD=reccaster.dbd
 
 
 # These allow developers to override the CONFIG_SITE variable

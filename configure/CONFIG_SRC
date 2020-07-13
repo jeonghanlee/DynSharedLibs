@@ -39,25 +39,33 @@ endif
 #
 
 
+MODULE_SRC_PATH=$(MODULE_SRC_TOP)/castApp/src
+MODULE_INC_PATH=$(MODULE_SRC_PATH)
+MODULE_OBJ_PATH=$(MODULE_SRC_PATH)/O.$(EPICS_HOST_ARCH)
+MODULE_DBD_PATH=$(MODULE_SRC_PATH)
 
-REG_SRC:=$(SRC_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
+
+
+# We have to remove test sources according to castApp/src/Makefile
+SRC_SRCS:=$(filter-out $(MODULE_SRC_PATH)/test%, $(wildcard $(MODULE_SRC_PATH)/*.c))
+SRC_OBJS:=$(subst $(MODULE_SRC_PATH),$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS))))
+
+REG_SRC:=$(MODULE_OBJ_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
 REG_OBJ:=$(addsuffix .o,$(basename $(REG_SRC)))
 
-SRC_OBJS:=$(wildcard $(SRC_PATH)/devIocStats/O.$(EPICS_HOST_ARCH)/*.o)
-
-EXPORT_ADDR_SRC:=$(SRC_PATH)/$(APPNAME)_exportAddress.c
+EXPORT_ADDR_SRC:=$(MODULE_OBJ_PATH)/$(APPNAME)_exportAddress.c
 EXPORT_ADDR_OBJ:=$(addsuffix .o,$(basename $(EXPORT_ADDR_SRC)))
+
 
 CPPFLAGS += -D_GNU_SOURCE -D_DEFAULT_SOURCE -DUSE_TYPED_RSET  
 CPPFLAGS += -D_X86_64_
 CPPFLAGS += -DUNIX  -Dlinux 
 CPPFLAGS += -MD -O3 -Wall -mtune=generic -m64 -fPIC  
-CPPFLAGS += -I$(SRC_PATH)/devIocStats/os/posix
-CPPFLAGS += -I$(SRC_PATH)/devIocStats/os/default
-CPPFLAGS += -I$(SRC_PACH)/devIocStats/os/Linux/
 CPPFLAGS += -I$(EPICS_BASE)/include
 CPPFLAGS += -I$(EPICS_BASE)/include/compiler/gcc
 CPPFLAGS += -I$(EPICS_BASE)/include/os/Linux     
+###
+CPPFLAGS += -I$(MODULE_INC_PATH)
 
 
 SHAREDLIB:= lib$(APPNAME).so
