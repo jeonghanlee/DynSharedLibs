@@ -53,6 +53,20 @@ PVAL: 70            SEVR: NO_ALARM      STAT: NO_ALARM      TPRO: 0
 VAL : 70  
 ```
 
+## Cleaning
+
+* Clean all files that are created.
+
+```bash
+make clean
+```
+
+* Clean all files that are created and remove the download source
+
+```bash
+make distclean
+```
+
 ## References
 
 [1] <https://github.com/paulscherrerinstitute/require>
