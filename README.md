@@ -16,6 +16,14 @@ Note that this approach may not work the exist / prebuilt IOC due to unknown rea
 
 * EPICS Base : one MUST download the exact version of EPICS base which was used to build the exist IOC
 
+## Examples
+
+* iocStats : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/iocStats_v01>
+* recsync (aka RecCaster) : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/recsync_v01>
+* retools : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/retools_v01>
+* autosave (TODO)
+* caPutLog (TODO) 
+
 ## Build Procedure
 
 ```bash
