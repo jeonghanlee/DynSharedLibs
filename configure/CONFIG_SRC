@@ -39,7 +39,7 @@ endif
 #
 
 
-MODULE_SRC_PATH=$(MODULE_SRC_TOP)/castApp/src
+MODULE_SRC_PATH=$(MODULE_SRC_TOP)/retoolsApp/src
 MODULE_INC_PATH=$(MODULE_SRC_PATH)
 MODULE_OBJ_PATH=$(MODULE_SRC_PATH)/O.$(EPICS_HOST_ARCH)
 MODULE_DBD_PATH=$(MODULE_SRC_PATH)
@@ -47,7 +47,7 @@ MODULE_DBD_PATH=$(MODULE_SRC_PATH)
 
 
 # We have to remove test sources according to castApp/src/Makefile
-SRC_SRCS:=$(filter-out $(MODULE_SRC_PATH)/test%, $(wildcard $(MODULE_SRC_PATH)/*.c))
+SRC_SRCS:=$(wildcard $(MODULE_SRC_PATH)/*.cpp)
 SRC_OBJS:=$(subst $(MODULE_SRC_PATH),$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS))))
 
 REG_SRC:=$(MODULE_OBJ_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
@@ -67,10 +67,9 @@ CPPFLAGS += -I$(EPICS_BASE)/include/os/Linux
 ###
 CPPFLAGS += -I$(MODULE_INC_PATH)
 
-
 SHAREDLIB:= lib$(APPNAME).so
 
-LDFLAGS += -shared -fPIC -rdynamic -m64 
+LDFLAGS += -shared -fPIC -rdynamic -m64 -std=c++11
 
 VARS_EXCLUDES+=SRC_PATH_INFO
 VARS_EXCLUDES+=INSTALL

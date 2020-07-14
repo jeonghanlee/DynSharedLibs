@@ -1,18 +1,18 @@
 
-APPNAME:=recsync
+APPNAME:=retools
 
 ## Where the Source repository SRC_URL/SRC_NAME
 ##
-SRC_URL:=https://github.com/ChannelFinder
+SRC_URL:=https://github.com/brunoseivam
 SRC_NAME:=${APPNAME}
 
 
 ## Which the source tag / branch / hash id would like to use
 ## 2020-04-21
-SRC_TAG:=ae7f476
+SRC_TAG:=f477f09
 
 ## Placeholder for the site-specific version control 
-SRC_VERSION:=ae7f476
+SRC_VERSION:=f477f09
 
 EPICS_BASE=${HOME}/epics_env/epics-base
 

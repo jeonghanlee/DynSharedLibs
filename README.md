@@ -28,17 +28,15 @@ make exist
 ## Run
 
 ```bash
-jhlee@parity: DynSharedLibs (rescync)$ softIoc cmd/st.cmd
+jhlee@parity: DynSharedLibs (retools)$ softIoc cmd/st.cmd
 dbLoadDatabase("/home/jhlee/epics_env/epics-base/bin/linux-x86_64/../../dbd/softIoc.dbd")
 softIoc_registerRecordDeviceDriver(pdbbase)
 # Begin cmd/st.cmd
-dlload "/home/jhlee/gitsrc/DynSharedLibs/cmd/librecsync.so"
-dbLoadDatabase "/home/jhlee/gitsrc/DynSharedLibs/cmd/reccaster.dbd"
-recsync_registerRecordDeviceDriver
-epicsEnvSet("IOCNAME", "recsync")
-var(reccastTimeout, 5.0)
-var(reccastMaxHoldoff, 5.0)
-dbLoadRecords("/home/jhlee/gitsrc/DynSharedLibs/cmd/reccaster.db", "P=recsync-RecSync:")
+#
+dlload "/home/jhlee/gitsrc/DynSharedLibs/cmd/libretools.so"
+dbLoadDatabase "/home/jhlee/gitsrc/DynSharedLibs/cmd/retools.dbd"
+retools_registerRecordDeviceDriver
+epicsEnvSet("IOCNAME", "retools")
 # End cmd/st.cmd
 iocInit()
 Starting iocInit
@@ -47,19 +45,14 @@ Starting iocInit
 ## Rev. R7.0.3.1-94-g02a24a144d0c06231121
 ############################################################################
 iocRun: All initialization complete
-iocRun: All initialization complete
-epics> dbl
-recsync-RecSync:Msg-I
-recsync-RecSync:State-Sts
-epics> dbpr recsync-RecSync:State-Sts
-ASG :               DESC:               DISA: 0             DISP: 0
-DISV: 1             NAME: recsync-RecSync:State-Sts         RVAL: 0
-SEVR: NO_ALARM      STAT: NO_ALARM      SVAL: 0             TPRO: 0
-VAL : 1
-epics> dbpr recsync-RecSync:Msg-I
-ASG :               DESC:               DISA: 0             DISP: 0
-DISV: 1             NAME: recsync-RecSync:Msg-I             SEVR: NO_ALARM
-STAT: NO_ALARM      SVAL:               TPRO: 0             VAL : Searching  
+epics> reAdd
+Command reAdd not found.
+epics> dbla
+epics> reTest
+sevr=minor Usage: reTest "pattern" "value"
+epics> reAddAlias
+sevr=minor Usage: reAddAlias "pattern" "alias"
+epics>
 ```
 
 ## Cleaning

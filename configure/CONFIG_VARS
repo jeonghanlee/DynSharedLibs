@@ -11,7 +11,7 @@ SRC_GITURL:=$(SRC_URL)/$(SRC_NAME)
 SRC_PATH:=$(SRC_NAME)-src
 
 
-MODULE_SRC_TOP=$(SRC_PATH)/client
+MODULE_SRC_TOP=$(SRC_PATH)
 
 # These allow developers to override the variable
 -include $(TOP)/../CONFIG_VARS.local
