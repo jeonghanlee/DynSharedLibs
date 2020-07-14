@@ -1,4 +1,4 @@
-# Dynamically Loading EPICS Module Builder Example
+# How to build a dynamically Loadable EPICS Module (Few Examples)
 
 ![Linter Run](https://github.com/jeonghanlee/DynSharedLibs/workflows/Linter%20Run/badge.svg)
 
