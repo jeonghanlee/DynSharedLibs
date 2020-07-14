@@ -38,26 +38,54 @@ endif
 #
 #
 
+ADDITONAL_INCS:= /os/posix /os/Linux /os/default
+
+MODULE_SRC_PATH=$(MODULE_SRC_TOP)/devIocStats
+MODULE_OBJ_PATH=$(MODULE_SRC_PATH)/O.$(EPICS_HOST_ARCH)
+MODULE_DBD_PATH=$(MODULE_SRC_PATH)
+MODULE_INC_PATH+=$(addprefix $(MODULE_SRC_PATH), $(ADDITONAL_INCS))
 
 
-REG_SRC:=$(SRC_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
+# We have to remove test sources according to castApp/src/Makefile
+
+SRC_SRCS1:=$(filter-out $(MODULE_SRC_PATH)/%Test.c, $(wildcard $(MODULE_SRC_PATH)/*.c))
+SRC_SRCS2:=$(wildcard $(MODULE_SRC_PATH)/os/Linux/*.c))
+SRC_SRCS3=$(MODULE_SRC_PATH)/os/default/osdWorkspaceUsage.c
+SRC_SRCS3+=$(MODULE_SRC_PATH)/os/default/osdClustInfo.c
+SRC_SRCS3+=$(MODULE_SRC_PATH)/os/default/osdSuspTasks.c
+SRC_SRCS3+=$(MODULE_SRC_PATH)/os/default/osdIFErrors.c
+SRC_SRCS3+=$(MODULE_SRC_PATH)/os/default/osdBootInfo.c
+SRC_SRCS4:=$(MODULE_SRC_PATH)/os/posix/osdSystemInfo.c
+SRC_SRCS4+=$(MODULE_SRC_PATH)/os/posix/osdHostInfo.c
+SRC_SRCS4+=$(MODULE_SRC_PATH)/os/posix/osdPIDInfo.c
+
+SRC_SRCS+=$(SRC_SRCS1)
+SRC_SRCS+=$(SRC_SRCS2)
+SRC_SRCS+=$(SRC_SRCS3)
+SRC_SRCS+=$(SRC_SRCS4)
+
+SRC_OBJS1:=$(subst $(MODULE_SRC_PATH),$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS1))))
+SRC_OBJS2:=$(subst $(MODULE_SRC_PATH)/os/Linux,$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS2))))
+SRC_OBJS3:=$(subst $(MODULE_SRC_PATH)/os/default,$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS3))))
+SRC_OBJS4:=$(subst $(MODULE_SRC_PATH)/os/posix,$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS4))))
+
+SRC_OBJS:=$(SRC_OBJS1) $(SRC_OBJS2) $(SRC_OBJS3) $(SRC_OBJS4)
+
+REG_SRC:=$(MODULE_OBJ_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
 REG_OBJ:=$(addsuffix .o,$(basename $(REG_SRC)))
 
-SRC_OBJS:=$(wildcard $(SRC_PATH)/devIocStats/O.$(EPICS_HOST_ARCH)/*.o)
-
-EXPORT_ADDR_SRC:=$(SRC_PATH)/$(APPNAME)_exportAddress.c
+EXPORT_ADDR_SRC:=$(MODULE_OBJ_PATH)/$(APPNAME)_exportAddress.c
 EXPORT_ADDR_OBJ:=$(addsuffix .o,$(basename $(EXPORT_ADDR_SRC)))
 
+  
 CPPFLAGS += -D_GNU_SOURCE -D_DEFAULT_SOURCE -DUSE_TYPED_RSET  
 CPPFLAGS += -D_X86_64_
 CPPFLAGS += -DUNIX  -Dlinux 
 CPPFLAGS += -MD -O3 -Wall -mtune=generic -m64 -fPIC  
-CPPFLAGS += -I$(SRC_PATH)/devIocStats/os/posix
-CPPFLAGS += -I$(SRC_PATH)/devIocStats/os/default
-CPPFLAGS += -I$(SRC_PACH)/devIocStats/os/Linux/
-CPPFLAGS += -I$(EPICS_BASE)/include
-CPPFLAGS += -I$(EPICS_BASE)/include/compiler/gcc
-CPPFLAGS += -I$(EPICS_BASE)/include/os/Linux     
+CPPFLAGS += -I $(EPICS_BASE)/include
+CPPFLAGS += -I $(EPICS_BASE)/include/compiler/gcc
+CPPFLAGS += -I $(EPICS_BASE)/include/os/Linux
+CPPFLAGS += $(addprefix -I , $(MODULE_INC_PATH))
 
 
 SHAREDLIB:= lib$(APPNAME).so
@@ -69,7 +97,13 @@ VARS_EXCLUDES+=INSTALL
 VARS_EXCLUDES+=INSTALL_PROGRAM
 VARS_EXCLUDES+=INSTALL_DATA
 VARS_EXCLUDES+=SUDOBASH
-
-
-
+VARS_EXCLUDES+=SRC_SRCS1
+VARS_EXCLUDES+=SRC_SRCS2
+VARS_EXCLUDES+=SRC_SRCS3
+VARS_EXCLUDES+=SRC_SRCS4
+VARS_EXCLUDES+=SRC_OBJS1
+VARS_EXCLUDES+=SRC_OBJS2
+VARS_EXCLUDES+=SRC_OBJS3
+VARS_EXCLUDES+=SRC_OBJS4
+VARS_EXCLUDES+=CPPFLAGS
 

@@ -36,63 +36,75 @@ endif
 
 deinit: distclean
 ## Clean Source
-distclean:
+distclean: clean
 ifneq ($(wildcard $(SRC_PATH)/.*),)
 	$(QUIET)echo "We've found $(SRC_PATH)"
 	$(QUIET)echo "Removing ....."
 	$(QUIET)rm -rf $(SRC_PATH)
-	$(QUIET)rm -rf $(INSTALL_LOCATION)
 else
 	$(QUIET)echo "There is no $(SRC_PATH)."
 endif
 
 
-.PHONY: build.src clean.src distclean.src
-
+.PHONY: build task0 task1 task2 task3 conf clean distclean.src
 
 build: task0 task1 task2 task3
 
 ## Build Source
 task0: conf
-	$(QUIET) $(MAKE) -C $(SRC_PATH)
+	$(QUIET) $(MAKE) -C $(MODULE_SRC_TOP)
 
 ## Copy the site specific files into sources
 conf:
-	$(QUIET)echo "EPICS_BASE=$(EPICS_BASE)" > RELEASE.local
-	$(QUIET)echo "MAKE_TEST_IOC_APP=NO"    >> RELEASE.local
-	$(QUIET)echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"       > CONFIG_SITE.local
+	$(QUIET)echo "EPICS_BASE=$(EPICS_BASE)"           > $(MODULE_SRC_TOP)/configure/RELEASE.local
+	$(QUIET)echo "MAKE_TEST_IOC_APP=NO"              >> $(MODULE_SRC_TOP)/configure/RELEASE.local
+	$(QUIET)echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"   > $(MODULE_SRC_TOP)/configure/CONFIG_SITE.local
 
 
 clean:
-	$(QUIET) $(MAKE) -C $(SRC_PATH) clean
+ifneq ($(wildcard $(MODULE_SRC_TOP)/.*),)
+	$(QUIET) $(MAKE) -C $(MODULE_SRC_TOP) clean
 	$(QUIET) rm -f $(REG_OBJ) $(REG_SRC) $(EXPORT_ADDR_SRC) $(EXPORT_ADDR_OBJ) $(SHAREDLIB)
 	$(QUIET) rm -rf $(INSTALL_LOCATION)
+else
+	$(QUIET)echo "There is no $(MODULE_SRC_TOP)."
+endif
 
 distclean.src:
-	$(QUIET) $(MAKE) -C $(SRC_PATH) distclean
+	$(QUIET) $(MAKE) -C $(MODULE_SRC_PATH) distclean
 
 
-task1: register.src $(REG_OBJ)
+.PHONY: $(REG_SRC)
 
-register.src:
-	$(QUIET)echo "Generating .... $(REG_SRC)"
-	$(REGISTERRECORDDEVICEDRIVER) $(SRC_PATH)/dbd/$(APP_DBD) $(APPNAME)_registerRecordDeviceDriver | grep -v iocshRegisterCommon > $(SRC_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
+task1: task0 $(REG_OBJ)
 
 $(REG_OBJ): $(REG_SRC)
 	$(QUIET)echo "Compiling ... $(REG_SRC)"
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
 
+$(REG_SRC):
+	$(QUIET)rm -f $@
+	$(QUIET)echo "Generating .... $@"
+	$(REGISTERRECORDDEVICEDRIVER) $(MODULE_DBD_PATH)/$(APP_DBD) $(APPNAME)_registerRecordDeviceDriver | grep -v iocshRegisterCommon > $@
+
+
+.PHONY: $(EXPORT_ADDR_SRC)
+
 task2: $(EXPORT_ADDR_OBJ)
 
-$(EXPORT_ADDR_OBJ): $(EXPORT_ADDR_SRC)
-	$(QUIET)echo "Compiling ... $(EXPORT_ADDR_SRC)"
+$(EXPORT_ADDR_OBJ): $(EXPORT_ADDR_SRC) 
+	$(QUIET)rm -f $@
+	$(QUIET)echo "Compiling ... $<"
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
 $(EXPORT_ADDR_SRC):
 	$(QUIET)rm -f $@
-	nm $(SRC_OBJS) $(REG_OBJ) | awk '$(makexportfile)' > $@
+	nm  $(REG_OBJ) $(SRC_OBJS) | awk '$(makexportfile)' > $@
 
 task3: $(SHAREDLIB)
 
-$(SHAREDLIB): $(SRC_OBJS) $(REG_OBJ) $(EXPORT_ADDR_OBJ) 
-	$(CXX) -o $@ $(LDFLAGS) $^ -lpthread -lm -lrt -ldl -lgcc 
+$(SHAREDLIB): $(EXPORT_ADDR_OBJ) 
+	$(CXX) -o $@ $(LDFLAGS) $< $(SRC_OBJS) $(REG_OBJ)  -lpthread -lm -lrt -ldl -lgcc
+
+.FORCE:
+
