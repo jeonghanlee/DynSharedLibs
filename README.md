@@ -18,6 +18,8 @@ Note that this approach may not work the exist / prebuilt IOC due to unknown rea
 
 ## Examples
 
+Each unique branch contains each module example. Current the following modules can be tested, and are planned.
+
 * iocStats : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/iocStats_v01>
 * recsync (aka RecCaster) : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/recsync_v01>
 * retools : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/retools_v01>
