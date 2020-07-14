@@ -24,7 +24,7 @@ Each unique branch contains each module example. Current the following modules c
 * recsync (aka RecCaster) : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/recsync_v01>
 * retools : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/retools_v01>
 * autosave (TODO)
-* caPutLog (TODO) 
+* caPutLog (TODO)
 
 ## Build Procedure
 
