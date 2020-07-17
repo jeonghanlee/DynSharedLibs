@@ -57,8 +57,6 @@ task0: conf
 ## Copy the site specific files into sources
 conf:
 	$(QUIET)echo "EPICS_BASE=$(EPICS_BASE)"               >  $(MODULE_SRC_TOP)/configure/RELEASE.local
-	$(QUIET)echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"       >  $(MODULE_SRC_TOP)/configure/CONFIG_SITE
-	$(QUIET)echo "CROSS_COMPILER_TARGET_ARCHS ="          >> $(MODULE_SRC_TOP)/configure/CONFIG_SITE
 
 clean:
 ifneq ($(wildcard $(MODULE_SRC_TOP)/.*),)

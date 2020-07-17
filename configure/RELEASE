@@ -1,18 +1,17 @@
 
-APPNAME:=recsync
+APPNAME:=caPutLog
 
 ## Where the Source repository SRC_URL/SRC_NAME
 ##
-SRC_URL:=https://github.com/ChannelFinder
+SRC_URL:=https://github.com/epics-modules
 SRC_NAME:=${APPNAME}
 
 
 ## Which the source tag / branch / hash id would like to use
-## 2020-04-21
-SRC_TAG:=ae7f476
+SRC_TAG:=ba041dd
 
 ## Placeholder for the site-specific version control 
-SRC_VERSION:=ae7f476
+SRC_VERSION:=${SRC_TAG}
 
 EPICS_BASE=${HOME}/epics_env/epics-base
 

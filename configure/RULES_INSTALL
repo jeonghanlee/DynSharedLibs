@@ -6,7 +6,6 @@ install.pre:
 	$(QUIET)$(SUDO) $(INSTALL) -d $(INSTALL_LOCATION)
 	$(QUIET)$(SUDO) $(INSTALL) -m 744 $(SHAREDLIB)                       $(INSTALL_LOCATION)/
 	$(QUIET)$(SUDO) $(INSTALL) -m 444 $(MODULE_SRC_TOP)/dbd/$(APP_DBD)   $(INSTALL_LOCATION)/
-	$(QUIET)$(SUDO) $(INSTALL) -m 444 $(MODULE_SRC_TOP)/db/reccaster.db  $(INSTALL_LOCATION)/
 
 install.cmd:
 	$(QUIET)echo "# "                                                  > $(INSTALL_LOCATION)/st.cmd
@@ -14,7 +13,8 @@ install.cmd:
 	$(QUIET)echo "dbLoadDatabase \"$(INSTALL_LOCATION)/$(APP_DBD)\""  >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "$(APPNAME)_registerRecordDeviceDriver"              >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "epicsEnvSet(\"IOCNAME\", \"$(APPNAME)\")"           >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "var(reccastTimeout, 5.0)"                           >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "var(reccastMaxHoldoff, 5.0)"                        >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "dbLoadRecords(\"$(INSTALL_LOCATION)/reccaster.db\", \"P=\$$(IOCNAME)-RecSync:\")" >> $(INSTALL_LOCATION)/st.cmd
-#	$(QUIET)echo "iocInit" >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "epicsEnvSet(\"LOG_INET\", \"127.0.0.1\")"           >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "epicsEnvSet(\"LOG_INET_PORT\", 7004)"               >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "epicsEnvSet(\"LOG_OPTION\", 0)"                     >> $(INSTALL_LOCATION)/st.cmd
+#	$(QUIET)echo "iocInit"                                            >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo 'caPutLogInit "$$(LOG_INET):$$(LOG_INET_PORT) $$(LOG_OPTION)"'       > $(INSTALL_LOCATION)/st2.cmd

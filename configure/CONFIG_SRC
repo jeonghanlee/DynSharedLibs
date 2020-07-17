@@ -39,15 +39,15 @@ endif
 #
 
 
-MODULE_SRC_PATH=$(MODULE_SRC_TOP)/castApp/src
+MODULE_SRC_PATH=$(MODULE_SRC_TOP)/${APPNAME}App
 MODULE_INC_PATH=$(MODULE_SRC_PATH)
 MODULE_OBJ_PATH=$(MODULE_SRC_PATH)/O.$(EPICS_HOST_ARCH)
 MODULE_DBD_PATH=$(MODULE_SRC_PATH)
 
 
-
-# We have to remove test sources according to castApp/src/Makefile
-SRC_SRCS:=$(filter-out $(MODULE_SRC_PATH)/test%, $(wildcard $(MODULE_SRC_PATH)/*.c))
+# we use the source file names only in order to define SRC_OBJS before any make rules
+#
+SRC_SRCS:=$(wildcard $(MODULE_SRC_PATH)/$(APPNAME)*.c)
 SRC_OBJS:=$(subst $(MODULE_SRC_PATH),$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS))))
 
 REG_SRC:=$(MODULE_OBJ_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
