@@ -90,7 +90,11 @@ CPPFLAGS += $(addprefix -I , $(MODULE_INC_PATH))
 
 SHAREDLIB:= lib$(APPNAME).so
 
-LDFLAGS += -shared -fPIC -rdynamic -m64 
+LDFLAGS += -m64 -shared -rdynamic
+#LDFLAGS += -Wl,-Bsymbolic
+#LDFLAGS += -Wl,-rpath,'$$ORIGIN'/lib
+#LDFLAGS += -Wl,--enable-new-dtags
+
 
 VARS_EXCLUDES+=SRC_PATH_INFO
 VARS_EXCLUDES+=INSTALL

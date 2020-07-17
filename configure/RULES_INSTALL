@@ -10,9 +10,11 @@ install.pre:
 
 install.cmd:
 	$(QUIET)echo "# "     > $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "epicsEnvSet(\"ENGINEER\", TEST)"                    >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "epicsEnvSet(\"LOCATION\", NOWHERE)"                 >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "dlload \"$(INSTALL_LOCATION)/$(SHAREDLIB)\""        >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "dbLoadDatabase \"$(INSTALL_LOCATION)/$(APP_DBD)\""  >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "$(APPNAME)_registerRecordDeviceDriver"              >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "epicsEnvSet(\"IOCNAME\", \"$(APPNAME)\")"                 >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "epicsEnvSet(\"IOCNAME\", \"$(APPNAME)\")"           >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "dbLoadRecords(\"$(INSTALL_LOCATION)/iocAdminSoft.db\", \"IOC=\$$(IOCNAME)-IocStats\")" >> $(INSTALL_LOCATION)/st.cmd
 #	$(QUIET)echo "iocInit" >> $(INSTALL_LOCATION)/st.cmd
