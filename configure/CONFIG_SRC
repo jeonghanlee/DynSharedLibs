@@ -47,7 +47,7 @@ MODULE_DBD_PATH=$(MODULE_SRC_PATH)
 
 # we use the source file names only in order to define SRC_OBJS before any make rules
 #
-SRC_SRCS:=$(wildcard $(MODULE_SRC_PATH)/$(APPNAME)*.c)
+SRC_SRCS:=$(wildcard $(MODULE_SRC_PATH)/*.c)
 SRC_OBJS:=$(subst $(MODULE_SRC_PATH),$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS))))
 
 REG_SRC:=$(MODULE_OBJ_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
@@ -57,7 +57,7 @@ EXPORT_ADDR_SRC:=$(MODULE_OBJ_PATH)/$(APPNAME)_exportAddress.c
 EXPORT_ADDR_OBJ:=$(addsuffix .o,$(basename $(EXPORT_ADDR_SRC)))
 
 
-CPPFLAGS += -D_GNU_SOURCE -D_DEFAULT_SOURCE -DUSE_TYPED_RSET  
+CPPFLAGS += -D_GNU_SOURCE -D_DEFAULT_SOURCE
 CPPFLAGS += -D_X86_64_
 CPPFLAGS += -DUNIX  -Dlinux 
 CPPFLAGS += -MD -O3 -Wall -mtune=generic -m64 -fPIC  
@@ -68,7 +68,7 @@ CPPFLAGS += -I$(EPICS_BASE)/include/os/Linux
 CPPFLAGS += -I$(MODULE_INC_PATH)
 
 
-SHAREDLIB:= lib$(APPNAME).so
+SHAREDLIB:= lib$(APPNAME2).so
 
 LDFLAGS += -shared -fPIC -rdynamic -m64 
 

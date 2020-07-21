@@ -8,7 +8,8 @@ INSTALL_LOCATION=$(TOP)/cmd
 # ### It may be linked with SRC_VERSION in RELEASE file
 # ### 
 
-APP_DBD=${APPNAME}.dbd
+APPNAME2=$(shell echo $(APPNAME) | tr '[:upper:]' '[:lower:]')
+APP_DBD=$(APPNAME2).dbd
 
 
 # These allow developers to override the CONFIG_SITE variable

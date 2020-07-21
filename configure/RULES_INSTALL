@@ -13,8 +13,4 @@ install.cmd:
 	$(QUIET)echo "dbLoadDatabase \"$(INSTALL_LOCATION)/$(APP_DBD)\""  >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "$(APPNAME)_registerRecordDeviceDriver"              >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "epicsEnvSet(\"IOCNAME\", \"$(APPNAME)\")"           >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "epicsEnvSet(\"LOG_INET\", \"127.0.0.1\")"           >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "epicsEnvSet(\"LOG_INET_PORT\", 7004)"               >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo "epicsEnvSet(\"LOG_OPTION\", 0)"                     >> $(INSTALL_LOCATION)/st.cmd
 #	$(QUIET)echo "iocInit"                                            >> $(INSTALL_LOCATION)/st.cmd
-	$(QUIET)echo 'caPutLogInit "$$(LOG_INET):$$(LOG_INET_PORT) $$(LOG_OPTION)"'       > $(INSTALL_LOCATION)/st2.cmd

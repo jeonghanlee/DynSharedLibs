@@ -1,5 +1,5 @@
 
-APPNAME:=caPutLog
+APPNAME:=MCoreUtils
 
 ## Where the Source repository SRC_URL/SRC_NAME
 ##
@@ -8,10 +8,10 @@ SRC_NAME:=${APPNAME}
 
 
 ## Which the source tag / branch / hash id would like to use
-SRC_TAG:=ba041dd
+SRC_TAG:=tags/1.2.2
 
 ## Placeholder for the site-specific version control 
-SRC_VERSION:=${SRC_TAG}
+SRC_VERSION:=1.2.2
 
 EPICS_BASE=${HOME}/epics_env/epics-base
 
