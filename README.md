@@ -30,9 +30,7 @@ Each unique branch contains each module example. Current the following modules c
 
 * MCoreUtils : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/MCoreUtils_v01>
 
-* autosave :
-
-* Sequencer :
+* autosave : <https://github.com/jeonghanlee/DynSharedLibs/releases/tag/autosave_v01>
 
 ## Build Procedure
 
