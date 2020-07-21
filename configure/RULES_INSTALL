@@ -13,4 +13,5 @@ install.cmd:
 	$(QUIET)echo "dbLoadDatabase \"$(INSTALL_LOCATION)/$(APP_DBD)\""  >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "$(APPNAME)_registerRecordDeviceDriver"              >> $(INSTALL_LOCATION)/st.cmd
 	$(QUIET)echo "epicsEnvSet(\"IOCNAME\", \"$(APPNAME)\")"           >> $(INSTALL_LOCATION)/st.cmd
-#	$(QUIET)echo "iocInit"                                            >> $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "#iocshLoad(iocsh/autosave_before_init.iocsh, IOCNAME=\"$(APPNAME)\", AS_TOP=\".\")" >>      $(INSTALL_LOCATION)/st.cmd
+	$(QUIET)echo "#iocInit"                                            >> $(INSTALL_LOCATION)/st.cmd

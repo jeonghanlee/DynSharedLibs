@@ -1,0 +1,15 @@
+##############################################################################
+####                         AUTOSAVE iocsh                                ###
+##############################################################################
+#-IOCNAME        - AUTOSAVE IOCNAME (IOCNAME should not have :)
+#-AS_TOP         - Autosave TOP path
+#-#############################################################################
+
+makeAutosaveFileFromDbInfo('$(AS_TOP)/$(IOCNAME)/req/$(SETTINGS_FILES=settings).req','autosaveFields')
+makeAutosaveFileFromDbInfo('$(AS_TOP)/$(IOCNAME)/req/$(VALUES_FILES_PASS0=values_pass0).req','autosaveFields_pass0')
+makeAutosaveFileFromDbInfo('$(AS_TOP)/$(IOCNAME)/req/$(VALUES_FILES_PASS1=values_pass1).req','autosaveFields_pass1')
+
+#- We don't need PREFIX, because generated req files has the hard-code PV names from DBInfo : info tag
+create_monitor_set('$(SETTINGS_FILES=settings).req','$(SETTINGS_PERIOD=5)')
+create_monitor_set('$(VALUES_FILES_PASS0=values_pass0).req','$(VALUES_PASS0_PERIOD=5)')
+create_monitor_set('$(VALUES_FILES_PASS1=values_pass1).req','$(VALUES_PASS1_PERIOD=10)')

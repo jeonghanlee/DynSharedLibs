@@ -39,16 +39,25 @@ endif
 #
 
 
-MODULE_SRC_PATH=$(MODULE_SRC_TOP)/${APPNAME}App
-MODULE_INC_PATH=$(MODULE_SRC_PATH)
+ADDITONAL_INCS:=/os/Linux
+MODULE_SRC_PATH=$(MODULE_SRC_TOP)/asApp/src
+MODULE_INC_PATH+=$(addprefix $(MODULE_SRC_PATH), $(ADDITONAL_INCS))
 MODULE_OBJ_PATH=$(MODULE_SRC_PATH)/O.$(EPICS_HOST_ARCH)
-MODULE_DBD_PATH=$(MODULE_SRC_PATH)
+MODULE_DBD_PATH=$(MODULE_SRC_TOP)/dbd
 
 
 # we use the source file names only in order to define SRC_OBJS before any make rules
 #
-SRC_SRCS:=$(wildcard $(MODULE_SRC_PATH)/*.c)
-SRC_OBJS:=$(subst $(MODULE_SRC_PATH),$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS))))
+SRC_SRCS1:=$(filter-out $(MODULE_SRC_PATH)/asVerify.c, $(wildcard $(MODULE_SRC_PATH)/*.c))
+SRC_SRCS2:=$(wildcard $(MODULE_SRC_PATH)/os/Linux/*.c)
+
+SRC_SRCS+=$(SRC_SRCS1) $(SRC_SRCS2)
+
+SRC_OBJS1:=$(subst $(MODULE_SRC_PATH),$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS1))))
+SRC_OBJS2:=$(subst $(MODULE_SRC_PATH)/os/Linux,$(MODULE_OBJ_PATH),$(addsuffix .o,$(basename $(SRC_SRCS2))))
+
+SRC_OBJS:=$(SRC_OBJS1) $(SRC_OBJS2)
+
 
 REG_SRC:=$(MODULE_OBJ_PATH)/$(APPNAME)_registerRecordDeviceDriver.cpp
 REG_OBJ:=$(addsuffix .o,$(basename $(REG_SRC)))
@@ -64,6 +73,7 @@ CPPFLAGS += -MD -O3 -Wall -mtune=generic -m64 -fPIC
 CPPFLAGS += -I$(EPICS_BASE)/include
 CPPFLAGS += -I$(EPICS_BASE)/include/compiler/gcc
 CPPFLAGS += -I$(EPICS_BASE)/include/os/Linux     
+CPPFLAGS += -DDBLOADRECORDSHOOKREGISTER
 ###
 CPPFLAGS += -I$(MODULE_INC_PATH)
 

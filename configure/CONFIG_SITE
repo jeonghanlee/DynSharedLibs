@@ -9,7 +9,7 @@ INSTALL_LOCATION=$(TOP)/cmd
 # ### 
 
 APPNAME2=$(shell echo $(APPNAME) | tr '[:upper:]' '[:lower:]')
-APP_DBD=$(APPNAME2).dbd
+APP_DBD=asSupport.dbd
 
 
 # These allow developers to override the CONFIG_SITE variable
